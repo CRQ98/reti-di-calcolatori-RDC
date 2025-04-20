@@ -3,11 +3,6 @@
 #include <stdlib.h>
 
 extern char *ARGV0;
-/*personalized printf*/
-void pprintf(char *s)
-{
-    printf("%s : %s", ARGV0, s);
-}
 
 /*Convert port from a string and check its validity*/
 int getportfromstring(char *portstr)
@@ -18,7 +13,7 @@ int getportfromstring(char *portstr)
     {
         if (!(portstr[n] >= '0' && portstr[n] <= '9'))
         {
-            pprintf("Port is not a number\n");
+            printf("%s : Port is not a number\n",ARGV0);
             return port;
         }
         n++;
@@ -26,8 +21,8 @@ int getportfromstring(char *portstr)
     port = atoi(portstr);
     if (port < 1024 || port > 65535)
     {
-        pprintf("Port non valid\n");
-        pprintf("Port range : (1024 - 65535)\n");
+        printf("%s : Port non valid\n",ARGV0);
+        printf("%s : Port range : (1024 - 65535)\n",ARGV0);
         return -1;
     }
     return port;

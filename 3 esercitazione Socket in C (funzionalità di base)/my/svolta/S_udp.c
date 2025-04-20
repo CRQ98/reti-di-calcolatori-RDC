@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     Calc *calc = (Calc *)malloc(sizeof(Calc));
     Calc cal;
     int port;
-    int len=sizeof(clientaddr);
+    socklen_t len=sizeof(clientaddr);
     int sd;
 
     // controll parameter number

@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     int nread, num;
     char c;
     int ris; 
-    int len;
+    socklen_t len;
     int sd;
     char *output;
 
