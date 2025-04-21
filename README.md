@@ -3,7 +3,7 @@
 
 `DatagramSocket ds`(`DatagramPacket dp`) : `ds.send(dp)`,`ds.receive(dp)`
 
-*output* Data -> `DataOutputStream` (`ByteArrayOutputStream`) -> DataInByteArray 
+*output* Data -> `DataOutputStream` (`ByteArrayOutputStream`) -> ByteArray 
 
 *input* ByteArray -> `ByteArrayInputStream` (`DataInputStream`) -> Data
 
