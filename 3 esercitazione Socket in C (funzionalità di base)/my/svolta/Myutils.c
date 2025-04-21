@@ -1,6 +1,8 @@
 #include "Myutils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 extern char *ARGV0;
 
@@ -32,4 +34,11 @@ void consumptioninput()
 {
     while (getchar() != '\n')
         ;
+}
+
+void inputoutput(int fd_in,int fd_out){
+    int nread;
+    char c;
+    while((nread=read(fd_in,&c,1))>0)
+        write(fd_out,&c,nread);
 }
