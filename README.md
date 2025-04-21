@@ -1,4 +1,4 @@
-# Reti-di-calcolatori-RDC
+# Reti-Di-Calcolatori-RDC
 ## Socket UDP java
 
 `DatagramSocket ds`(`DatagramPacket dp`) : `ds.send(dp)`,`ds.receive(dp)`
