@@ -124,9 +124,9 @@ int main(int argc, char **argv) {
             /*execl = execute and leave, esegue un processo e termina.
              * DEF:
              *	execl(char *path, char *arg0, ..., char *argn,  0).
-             *		  ^		^		^	^--- Terminatore lista argomenti
-             *		  |		|		---- Ultimo argomento del comando
-             *		  |		---- Primo argomento del comando
+             *		  ^		            ^		            ^	^--- Terminatore lista argomenti
+             *		  |		            |		            ---- Ultimo argomento del comando
+             *		  |		            ---- Primo argomento del comando
              *		  ----- PATH del file del comando da eseguire
              *
              * Prestare attenzione al path del programma SORT sull'host server.
