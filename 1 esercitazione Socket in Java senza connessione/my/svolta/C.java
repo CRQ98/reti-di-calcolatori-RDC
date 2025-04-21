@@ -44,7 +44,7 @@ public class C {
     ByteArrayInputStream bis = null;
     DataInputStream dis = null;
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-    String line = null, filename = null, richiesta = null, risposta = null;
+    String line = null, filename = null, richiesta = null;
     int riga = -1;
     String[] content = null;
 
