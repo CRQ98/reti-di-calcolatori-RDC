@@ -1,64 +1,52 @@
 # Reti-Di-Calcolatori-RDC
 ## Socket UDP java
-### Client
+### Client :
 **Init**
-```
-    DatagramPacket dp = null;
-    DatagramSocket ds = null;
-    byte[] buf = new byte[256];
-    ds = new DatagramSocket();
-    ds.setSoTimeout(30000);
-    dp = new DatagramPacket(buf, buf.length, Saddr, port);
+```java
+DatagramPacket dp = null;
+DatagramSocket ds = null;
+byte[] buf = new byte[256];
+ds = new DatagramSocket();
+ds.setSoTimeout(30000);
+dp = new DatagramPacket(buf, buf.length, saddr, port);
 ```
 **Create Data Transfer Stream**
-```
-    ByteArrayOutputStream bos = null;
-    DataOutputStream dos = null;
-    ByteArrayInputStream bis = null;
-    DataInputStream dis = null;
-
-
-    bis = new ByteArrayInputStream(dp.getData());
-    dis = new DataInputStream(bis);
+```java
+ByteArrayOutputStream bos = null;
+DataOutputStream dos = null;
+ByteArrayInputStream bis = null;
+DataInputStream dis = null;
 ```
 **To Server**
-```
-    bos = new ByteArrayOutputStream();
-    dos = new DataOutputStream(bos);
-    dos.writeUTF(request);
-    dp.setData(bos.toByteArray());
-    ds.send(dp);
+```java
+bos = new ByteArrayOutputStream();
+dos = new DataOutputStream(bos);
+dos.writeUTF(request);
+dp.setData(bos.toByteArray());
+ds.send(dp);
 ```
 **From Server**
-```
+```java
 // clean buf
-    dp.setData(buf);
-    ds.receive(dp);
-    bis = new ByteArrayInputStream(dp.getData());
-    dis = new DataInputStream(bis);
-    response = dis.readUTF();
+dp.setData(buf);
+ds.receive(dp);
+bis = new ByteArrayInputStream(dp.getData());
+dis = new DataInputStream(bis);
+response = dis.readUTF();
 ```
-### Server
-`DatagramSocket ds`(`DatagramPacket dp`) : `ds.send(dp)`,`ds.receive(dp)`
+### Server :
 
-*output* Data -> `DataOutputStream` (`ByteArrayOutputStream`) -> ByteArray 
-
-*input* ByteArray -> `ByteArrayInputStream` (`DataInputStream`) -> Data
 
 ## Socket TCP java
-### Client
-### Server
-`Socket socket = new Socket(addr, port);`
-Create input stream
-`insock = new DataInputStream(socket.getInputStream());`
-Create output stream
-`outsock = new DataOutputStream(socket.getOutputStream());`
+### Client :
+### Server :
+
 
 ## Socket UDP C
-### Client
-### Server
-`sd = socket(AF_INET, SOCK_DGRAM, 0);`
+### Client :
+### Server :
+
 
 ## Socket TCP C
-### Client
-### Server
+### Client :
+### Server :
