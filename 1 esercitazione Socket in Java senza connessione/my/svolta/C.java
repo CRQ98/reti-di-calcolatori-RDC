@@ -1,16 +1,18 @@
+
 //C
 import java.io.*;
 import java.net.*;
-
 
 public class C {
 
   public static void main(String[] args) {
     InetAddress Saddr = null;
     int port = -1;
-    //controllo input
+    // controllo input
     try {
-      if (args.length != 2) usage(); else {
+      if (args.length != 2) {
+        usage();
+      } else {
         Saddr = InetAddress.getByName(args[0]);
         port = Integer.parseInt(args[1]);
       }
@@ -23,7 +25,7 @@ public class C {
       e2.printStackTrace();
       System.exit(2);
     }
-    //ini
+    // ini
     DatagramPacket dp = null;
     DatagramSocket ds = null;
     byte[] bt = new byte[256];
@@ -49,25 +51,23 @@ public class C {
     String[] content = null;
 
     System.out.println(
-      "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF"
-    );
+        "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF");
 
     try {
-      //get input
+      // get input
       while ((line = in.readLine()) != null) {
         try {
           content = line.split(":");
           if (content.length != 2) {
             System.out.println("Errore, input non accetabile");
             System.out.println(
-              "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF"
-            );
+                "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF");
             continue;
           }
-          //prepare to send
-            for(int i=0;i<content.length;i++){
-              content[i]=content[i].trim();
-            }
+          // prepare to send
+          for (int i = 0; i < content.length; i++) {
+            content[i] = content[i].trim();
+          }
           filename = content[0];
           riga = Integer.parseInt(content[1]);
           richiesta = filename + " " + riga;
@@ -80,29 +80,26 @@ public class C {
         } catch (NumberFormatException nfe) {
           System.out.println("Errore, input non accetabile");
           System.out.println(
-            "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF"
-          );
+              "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF");
           continue;
         } catch (IOException e) {
           System.out.println("Errore nel inviare il socket");
           System.out.println(
-            "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF"
-          );
+              "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF");
           continue;
         }
-        //receive
+        // receive
         try {
-          //clean buf
+          // clean buf
           dp.setData(bt);
           ds.receive(dp);
         } catch (IOException e) {
           System.out.println("Errore nel ricevere il socket");
           System.out.println(
-            "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF"
-          );
+              "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF");
           continue;
         }
-        //stamp
+        // stamp
         try {
           bis = new ByteArrayInputStream(dp.getData());
           dis = new DataInputStream(bis);
@@ -111,8 +108,7 @@ public class C {
         } catch (IOException e) {
           System.out.println("Errore nel lettura della packet");
           System.out.println(
-            "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF"
-          );
+              "Inserire nomeFile e numero di riga che vuoi ottenere separato con ':', o terminare con EOF");
           continue;
         }
       }
