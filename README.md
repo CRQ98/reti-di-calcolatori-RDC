@@ -80,4 +80,4 @@ ds.send(dp);
 
 ## RMI
 ## RPC
-#26 open
+#1 open
