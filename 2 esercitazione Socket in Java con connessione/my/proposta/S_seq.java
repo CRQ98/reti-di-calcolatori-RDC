@@ -8,7 +8,6 @@ public class S_seq {
 	private static final String START = "start";
 
 	public static void main(String[] args) {
-		InetAddress addr = null;
 		int port = -1;
 		//controllo input
 		try {
@@ -50,13 +49,11 @@ public class S_seq {
 			} catch (SocketException se) {
 				errprintln("Error nella set timeout", se);
 				server.close();
-				client.close();
 
 				System.exit(3);
 			} catch (IOException ioe) {
 				errprintln("Error in accept socket", ioe);
 				server.close();
-				client.close();
 				System.exit(3);
 			}
 
@@ -76,7 +73,6 @@ public class S_seq {
 			while ((filename = insock.readUTF()) != null) {
 				println("Filename received: " + filename);
 				File file = new File(filename);
-				String res = null;
 				if (file.exists()) {
 					println("File <" + filename + "> already exists");
 					outsock.writeUTF(NEXT);

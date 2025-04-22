@@ -6,7 +6,6 @@ public class S_con {
 	private static final int PORT = 54321; // porta default per server
 
 	public static void main(String[] args) {
-		InetAddress addr = null;
 		int port = -1;
 		//controllo input
 		try {
@@ -56,6 +55,11 @@ public class S_con {
 			} catch (Exception e) {
 				errprintln("Error in S_con thread", e);
 			}
+			try {
+				servers.close();
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
 		}
 	}
 
@@ -71,10 +75,6 @@ public class S_con {
 
 	private static void println(String s) {
 		System.out.println(Thread.currentThread().getStackTrace()[1].getClassName() + ": " + s);
-	}
-
-	private static void prompt() {
-		println("Insert the filename that you want upload to server, ^D(Unix)/^Z(Win)+Enter to END");
 	}
 }
 

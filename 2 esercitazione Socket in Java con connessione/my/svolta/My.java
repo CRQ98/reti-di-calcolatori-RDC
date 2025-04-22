@@ -163,7 +163,6 @@ public class My {
 	static void transferFileBinary(DataInputStream src, DataOutputStream dest, long size)
 		throws IOException {
 		// ciclo di lettura da sorgente e scrittura su destinazione
-		int buffer;
 		int counter = 0;
 		try {
 			// esco dal ciclo all lettura di un valore negativo -> EOF

@@ -6,7 +6,6 @@ public class S_con {
 	public static final int PORT = 54321; // porta default per server
 
 	public static void main(String[] args) {
-		InetAddress addr = null;
 		int port = -1;
 		//controllo input
 		try {
@@ -120,7 +119,6 @@ class S implements Runnable {
 			while ((filename = insock.readUTF()) != null) {
 				println("Filename received: <" + filename+">");
 				File file = new File(filename);
-				String res = null;
 				if (file.exists()) {
 					println("File <" + filename + "> already exists");
 					outsock.writeUTF(NEXT);

@@ -6,7 +6,6 @@ public class S_seq {
 	public static final int PORT = 54321; // porta default per server
 
 	public static void main(String[] args) {
-		InetAddress addr = null;
 		int port = -1;
 		//controllo input
 		try {
@@ -120,9 +119,5 @@ public class S_seq {
 
 	private static void println(String s) {
 		System.out.println(Thread.currentThread().getStackTrace()[1].getClassName() + ": " + s);
-	}
-
-	private static void prompt() {
-		println("Insert the filename that you want upload to server, ^D(Unix)/^Z(Win)+Enter to END");
 	}
 }
