@@ -15,24 +15,12 @@ void prompt(char *s)
     printf("%s : ", ARGV0);
     printf("%s", s);
 }
-void inputoutput_local(int in,int out){
-    int nread;
-    char c;
-    while((nread=read(in,&c,1))>0){
-        write(out,&c,nread);
-        write(1,&c,nread);
-    }
 
-}
 int main(int argc, char **argv)
 {
     ARGV0 = argv[0];
     struct sockaddr_in clientaddr, servaddr;
     struct hostent *host;
-    int nread, num;
-    char c;
-    int sd,fin,fout;
-    char *output;
 
     // controll parameter number
     if (argc != 3)
@@ -40,7 +28,7 @@ int main(int argc, char **argv)
         printf("Usage: %s <serverIP> <serverPort>\n", ARGV0);
         exit(1);
     }
-    
+
     // get host. First from etc/hosts then DNS ...
     host = gethostbyname(argv[1]);
     if (host == NULL)
@@ -55,70 +43,71 @@ int main(int argc, char **argv)
     if ((port = getportfromstring(argv[2])) == -1)
         exit(1);
 
-
     // clear mem of server address
-    // 测试没有char*
-    memset((char *)&servaddr, 0, sizeof(struct sockaddr_in));
+    memset(&servaddr, 0, sizeof(struct sockaddr_in));
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = ((struct in_addr *)(host->h_addr))->s_addr; /*h_addr is h_addr_list[0] */
     servaddr.sin_port = htons(port);
 
     prompt("Start\n");
 
-    char filename[256]
-    ,filename_sorted[256];
-    
-    printf("Insert filename to sort or EOF to END\n");
-    while((nread=scanf("%s",filename))!=EOF){
-        //consumptioninput();
-        fin=open(filename,O_RDONLY);
-        if(fin<0){
-            prompt("");
-            perror("Open file sorg failed\n");
-            printf("Insert filename or EOF to END\n");
+    char filename[256];
+    int nread, fin, fout, nline, sd;
+    char *request;
+
+    printf("Insert <filename> which you want eliminate line, EOF to END.\n");
+    while ((nread = scanf("%s", filename)) != EOF)
+    {
+        consumptioninput();
+        fin = open(filename, O_RDONLY);
+        if (fin < 0)
+        {
+            perror("Open file");
+            printf("Insert <filename> which you want eliminate line, EOF to END.\n");
             continue;
         }
-        prompt("Insert file dest name\n");
-        if((nread=scanf("%s",filename_sorted))<0)
-            break;
-        fout=open(filename_sorted,O_WRONLY|O_CREAT,0644);
-        if(fout<0){
-            prompt("");
-            perror("Open file dest failed\n");
-            printf("Insert filename or EOF to END\n");
+        printf("Insert <number of line> that you want eliminate\n");
+        if ((nread = scanf("%d", &nline)) < 0)
+        {
+            perror("Read number of line");
+            printf("Insert <filename> which you want eliminate line, EOF to END.\n");
             continue;
         }
+        consumptioninput();
 
         // create socket
         sd = socket(AF_INET, SOCK_STREAM, 0);
         if (sd < 0)
         {
-            perror(ARGV0);
-            perror(" : Cannot create socket");
+            perror("Create socket");
             exit(3);
         }
         prompt("");
         printf("Created socket in fd %d\n", sd);
-        
+
         /* BIND implicit in connect */
-        if (connect(sd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr)) < 0) {
+        if (connect(sd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr)) < 0)
+        {
             prompt("");
-            perror("connect");
+            perror("Connect");
             exit(4);
         }
         prompt("Connected to server\n");
 
-        inputoutput_local(fin,sd);
-        close(fin);
-        shutdown(sd,1);
-        prompt("File inviato\n");
+        prompt("Send number of line\n");
+        write(sd, &nline, sizeof(nline));
 
-        prompt("Receive and print on STDOUT the file sorted content\n");
-        inputoutput_local(sd,fout);
-        close(fout);
-        shutdown(sd,0);
-        prompt("End of transfer\n");
-        printf("Insert filename to sort or EOF to END\n");
+        prompt("Send content of file\n");
+        inputoutput(fin, sd);
+        close(fin);
+        shutdown(sd, 1);
+
+        prompt("Receive response\n");
+        inputoutput(sd, 1);
+        close(sd);
+
+        printf("\n");
+        printf("Insert <filename> which you want eliminate line, EOF to END.\n");
     }
     prompt("Termino...");
     exit(0);

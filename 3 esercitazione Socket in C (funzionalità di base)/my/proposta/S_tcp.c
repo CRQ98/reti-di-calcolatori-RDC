@@ -88,17 +88,17 @@ int main(int argc, char **argv)
         perror("Listen");
         exit(2);
     }
-    prompt("Listen OK\n");
+    prompt("Listen list set OK\n");
 
     signal(SIGCHLD, gestore);
 
     socklen_t len;
-    int clientfd;
+    int cfd;
     while (1)
     {
         // Accept ------------------------------------------
         len = sizeof(clientaddr);
-        if ((clientfd = accept(sd, (struct sockaddr *)&clientaddr, &len)) < 0)
+        if ((cfd = accept(sd, (struct sockaddr *)&clientaddr, &len)) < 0)
         {
             if (errno == EINTR)
             {
@@ -111,30 +111,43 @@ int main(int argc, char **argv)
             }
         }
         prompt("");
-        printf("Get connection client fd = %d\n", clientfd);
+        printf("Get connection client fd = %d\n", cfd);
 
         // fork -------------------------------------------
         if (fork() == 0)
         { // is child
             prompt("Child\n");
-
             // close fd no in use
             close(sd);
 
-            // close STDIN and STDOUT then dup clientfd to STDIN and STDOUT
-            close(1);
-            close(0);
-            dup(clientfd); // to STDIN -> 0
-            dup(clientfd); // to STDIN -> 1
-            close(clientfd);
+            prompt("Read number of line\n");
+            int nline;
+            if (read(cfd, &nline, sizeof(nline)) < 0)
+            {
+                perror("Read number of line");
+            }
+            printf("Line request to eliminate : %d\n", nline);
 
-            execl("/usr/bin/sort", "sort", (char *)0);
-            perror("Sort");
+            int lineCount, nread;
+            char c;
+            lineCount = 1;
+            while ((nread = read(cfd, &c, 1)) > 0)
+            {
+                if (lineCount != nline)
+                {
+                    if (write(cfd, &c, nread) < 0)
+                        perror("Write");
+                }
+                if (c == '\n')
+                    lineCount++;
+            }
+            close(cfd);
+            exit(0);
         }
         else
         { // is father
             // close fd no in use
-            close(clientfd);
+            close(cfd);
         }
     }
 }
