@@ -7,14 +7,6 @@
 #include <sys/socket.h>
 #include "Myutils.h"
 
-// def struct---------------------
-typedef struct
-{
-    int op1;
-    int op2;
-    char op;
-} Calc;
-
 const char *ARGV0;
 void prompt(char *s)
 {
@@ -27,18 +19,12 @@ int main(int argc, char **argv)
     ARGV0 = argv[0];
     struct sockaddr_in clientaddr, servaddr;
     struct hostent *host;
-    Calc cal;
-    int nread, num;
-    char c;
-    int ris; 
     socklen_t len;
     int sd;
-    char *output;
 
     // controll parameter number
     if (argc != 3)
     {
-        prompt("");
         printf("Usage: %s <serverIP> <serverPort>\n", ARGV0);
         exit(1);
     }
@@ -91,54 +77,48 @@ int main(int argc, char **argv)
     }
     prompt("Bind successfull\n");
 
-    prompt("Inserisca primo operando (Un numero intero), EOF per end.\n");
-    while ((nread = scanf("%d", &num)) != EOF)
+    int nread;
+    char filename[256];
+    int result;
+
+    prompt("Insert remote filename which you want get longest word, EOF per end.\n");
+    while ((nread = scanf("%s", filename)) != EOF)
     {
+        consumptioninput();
         if (nread != 1)
         {
-            consumptioninput();
-            prompt("Reinserisca primo operando (Un numero intero), EOF per end.\n");
+            prompt("Again pls! Insert remote filename which you want get longest word, EOF per end.\n");
             continue;
         }
-        cal.op1 = num;
-        consumptioninput();
-        prompt("Inserisca secondo operando\n");
-        while ((nread = scanf("%d", &num)) != 1)
-        {
-            consumptioninput();
-            prompt("Reinserisca secondo operando (Un numero intero)\n");
-            continue;
-        }
-        cal.op2 = num;
-        do
-        {
-            consumptioninput();
-            prompt("Inserisca operazione ( +, -,  *, / )\n");
-            scanf("%c", &c);
-        } while (c != '+' && c != '-' && c != '*' && c != '/');
-        cal.op = c;
-        prompt("");
-        printf("Operazione richiesta: [%d %c %d]\n", cal.op1, cal.op, cal.op2);
 
         // sendto
         len = sizeof(struct sockaddr_in);
-        if (sendto(sd, &cal, sizeof(Calc), 0, (struct sockaddr *)&servaddr, len) < 0)
+        if (sendto(sd, filename, sizeof(filename), 0, (struct sockaddr *)&servaddr, len) < 0)
         {
             perror("Cannot send");
             continue;
         }
-        prompt("Send ok\n");
+        prompt("Send OK\n");
 
         // recvfrom
-        if (recvfrom(sd, &ris, sizeof(ris), 0, (struct sockaddr *)&servaddr, &len) < 0)
+        if (recvfrom(sd, &result, sizeof(result), 0, (struct sockaddr *)&servaddr, &len) < 0)
         {
             perror("Cannot receive");
             continue;
         }
+        prompt("Receive OK\n");
 
         prompt("");
-        printf("Esito dell'operazione: %d\n", ris);
-        prompt("Inserisca primo operando (Un numero intero), EOF per end.\n");
+        if (result >= 0)
+        {
+            printf("Esito : %d\n", result);
+        }
+        else
+        {
+            printf("Esito : Cannot read file\n");
+        }
+        prompt("Insert remote filename which you want get longest word, EOF per end.\n");
+
     } // while
     close(sd);
     prompt("Termino...\n");
