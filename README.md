@@ -2,9 +2,9 @@
 <ins>Close everything that you dont need any more!!!</ins>
 ---
 <details>
-<summary> Socket UDP java </summary>
+<summary> Socket java UDP </summary>
 
-## Socket UDP java  
+## Socket java UDP   
 ### Client :
 **Init**
 ```java
@@ -71,9 +71,9 @@ ds.send(dp);
 </details>
 
 <details>
-<summary> Socket TCP java </summary>
+<summary> Socket java TCP </summary>
 
-## Socket TCP java
+## Socket java TCP 
 ### Client :
 **Init**
 ```java
@@ -102,19 +102,24 @@ outcome = insock.readUTF();
 
 
 <details>
-<summary> Socket UDP C </summary>
+<summary> Socket C UDP  </summary>
 
-## Socket UDP C
+## Socket C UDP 
 ### Client :
 ### Server :
 </details>
 
 <details>
-<summary> Socket TCP C </summary>
+<summary> Socket C TCP  </summary>
 
-## Socket TCP C
+## Socket C TCP 
 ### Client :
 ### Server :
+</details>
+<details>
+<summary> Socket C con select </summary>
+
+## Socket C con select
 </details>
 
 <details>
