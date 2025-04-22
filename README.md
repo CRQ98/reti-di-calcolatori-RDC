@@ -1,4 +1,5 @@
 # Reti-Di-Calcolatori-RDC
+Close everything that you dont need any more!!!
 ## Socket UDP java
 ### Client :
 **Init**
@@ -66,6 +67,28 @@ ds.send(dp);
 
 ## Socket TCP java
 ### Client :
+**Init**
+```java
+Socket socket = null;
+socket = new Socket(addr, port);
+socket.setSoTimeout(20000);
+```
+**Get sock streams**
+```java
+DataInputStream insock = null;
+DataOutputStream outsock = null;
+insock = new DataInputStream(socket.getInputStream());
+outsock = new DataOutputStream(socket.getOutputStream());
+```
+**To Server**
+```java
+outsock.writeUTF(filename);
+My.transferFileBinary(infile, outsock);
+```
+**From Server**
+```java
+outcome = insock.readUTF();
+```
 ### Server :
 
 
