@@ -1,6 +1,10 @@
 # Reti-Di-Calcolatori-RDC
-Close everything that you dont need any more!!!
-## Socket UDP java
+<ins>Close everything that you dont need any more!!!</ins>
+---
+<details>
+<summary> Socket UDP java </summary>
+
+## Socket UDP java  
 ### Client :
 **Init**
 ```java
@@ -64,6 +68,10 @@ dos.writeUTF(respose);
 dp.setData(bos.toByteArray());
 ds.send(dp);
 ```
+</details>
+
+<details>
+<summary> Socket TCP java </summary>
 
 ## Socket TCP java
 ### Client :
@@ -90,16 +98,33 @@ My.transferFileBinary(infile, outsock);
 outcome = insock.readUTF();
 ```
 ### Server :
+</details>
 
+
+<details>
+<summary> Socket UDP C </summary>
 
 ## Socket UDP C
 ### Client :
 ### Server :
+</details>
 
+<details>
+<summary> Socket TCP C </summary>
 
 ## Socket TCP C
 ### Client :
 ### Server :
+</details>
+
+<details>
+<summary> RMI </summary>
 
 ## RMI
+</details>
+<details>
+<summary> RPC </summary>
+
 ## RPC
+</details>
+
