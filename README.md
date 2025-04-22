@@ -35,7 +35,34 @@ dis = new DataInputStream(bis);
 response = dis.readUTF();
 ```
 ### Server :
-
+**Init**
+```java
+DatagramSocket ds = null;
+DatagramPacket dp = null;
+ds = new DatagramSocket(port);
+dp = new DatagramPacket(buf, buf.length);
+```
+**Create Data Transfer Stream**
+```java
+ByteArrayOutputStream bos = null;
+DataOutputStream dos = null;
+ByteArrayInputStream bis = null;
+DataInputStream dis = null;
+```
+**From Client**
+```java
+bis = new ByteArrayInputStream(dp.getData());
+dis = new DataInputStream(bis);
+request = dis.readUTF();
+```
+**To Client**
+```java
+bos = new ByteArrayOutputStream();
+dos = new DataOutputStream(bos);
+dos.writeUTF(respose);
+dp.setData(bos.toByteArray());
+ds.send(dp);
+```
 
 ## Socket TCP java
 ### Client :
@@ -50,3 +77,6 @@ response = dis.readUTF();
 ## Socket TCP C
 ### Client :
 ### Server :
+
+## RMI
+## RPC
