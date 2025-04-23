@@ -1,0 +1,17 @@
+COMPILAZIONE E ESECUZIONE RMI
+
+Lato server
+1. Compilazione interfaccia e implementazione parte server
+javac   Interface.java
+        RMIServer.java
+
+2. Generazione eseguibili Stub e Skeleton
+rmic -vcompat RMIServer ->  RMIServer_Stub.class and EchoRMIServer_Skel.class
+
+3. Esecuzione lato server (registry e server)
+rmiregistry
+java RMIServer
+
+Lato client
+1. Compilazione:    javac   RMIClient.java
+2. Esecuzione:      java    RMIClient
