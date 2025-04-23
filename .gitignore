@@ -3,6 +3,7 @@
 !test
 !dir
 !txt
+!Esami */**
 .DS_Store
 *.sh
 *.code-workspace
