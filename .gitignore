@@ -1,0 +1,9 @@
+*/*/*/*
+!*.*
+!test
+!dir
+!txt
+.DS_Store
+*.sh
+*.code-workspace
+*.yml
