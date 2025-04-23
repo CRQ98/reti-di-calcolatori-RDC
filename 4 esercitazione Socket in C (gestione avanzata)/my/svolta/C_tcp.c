@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 
         if (response == 'N')
         {
-            printf("Connot find this file in remote\n");
+            printf("Cannot find this file in remote\n");
         } // response == 'N'
         else if (response == 'S')
         {
