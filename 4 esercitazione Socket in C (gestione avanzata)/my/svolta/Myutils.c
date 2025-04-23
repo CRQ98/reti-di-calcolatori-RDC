@@ -40,5 +40,7 @@ void inputoutput(int fd_in,int fd_out){
     int nread;
     char c;
     while((nread=read(fd_in,&c,1))>0)
-        write(fd_out,&c,nread);
+        if(write(fd_out,&c,nread)<0){
+            perror("Write in inputoutput");
+        }
 }

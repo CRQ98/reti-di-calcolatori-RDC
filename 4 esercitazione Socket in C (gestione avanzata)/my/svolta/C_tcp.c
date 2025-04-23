@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     if (host == NULL)
     {
         prompt("Host Not Founded\n");
-        exit(2);
+        exit(1);
     }
 
     // get port form personalized function
@@ -50,30 +50,13 @@ int main(int argc, char **argv)
 
     prompt("Start\n");
 
-    char filename[256];
+    char filename[256], response;
     int nread, fin, fout, nline, sd;
     char *request;
 
-    printf("Insert <filename> which you want eliminate line, EOF to END.\n");
-    while ((nread = scanf("%s", filename)) != EOF)
+    printf("Insert <filename> which you want send to Server, EOF to END.\n");
+    while ((fgets(filename, sizeof(filename), stdin)) != NULL)
     {
-        consumptioninput();
-        fin = open(filename, O_RDONLY);
-        if (fin < 0)
-        {
-            perror("Open file");
-            printf("Insert <filename> which you want eliminate line, EOF to END.\n");
-            continue;
-        }
-        printf("Insert <number of line> that you want eliminate\n");
-        if ((nread = scanf("%d", &nline)) < 0)
-        {
-            perror("Read number of line");
-            printf("Insert <filename> which you want eliminate line, EOF to END.\n");
-            continue;
-        }
-        consumptioninput();
-
         // create socket
         sd = socket(AF_INET, SOCK_STREAM, 0);
         if (sd < 0)
@@ -89,24 +72,49 @@ int main(int argc, char **argv)
         {
             prompt("");
             perror("Connect");
-            exit(4);
+            exit(2);
         }
         prompt("Connected to server\n");
 
-        prompt("Send number of line\n");
-        write(sd, &nline, sizeof(nline));
+        prompt("");
+        printf("Send filename <%s>\n", filename);
+        if (write(sd, filename, strlen(filename) + 1) < 0)
+        {
+            perror("Write filename");
+            printf("Insert <filename> which you want send to Server, EOF to END.\n");
+            continue;
+        }
+        if (read(sd, &response, 1) < 0)
+        {
+            perror("Read response");
+            close(sd);
+            exit(2);
+        }
 
-        prompt("Send content of file\n");
-        inputoutput(fin, sd);
-        close(fin);
-        shutdown(sd, 1);
-
-        prompt("Receive response\n");
-        inputoutput(sd, 1);
+        if (response == 'N')
+        {
+            printf("Connot find this file in remote\n");
+        } // response == 'N'
+        else if (response == 'S')
+        {
+            fout = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (fout < 0)
+            {
+                perror("Open file");
+                printf("Insert <filename> which you want send to Server, EOF to END.\n");
+                continue;
+            }
+            prompt("receive file\n");
+            inputoutput(sd, fout);
+        } // response == 'S'
+        else
+        {
+            printf("Error when get response\n");
+        }
+        close(fout);
         close(sd);
-
-        printf("\n");
-        printf("Insert <filename> which you want eliminate line, EOF to END.\n");
+        prompt("Done\n");
+        printf("Insert <filename> which you want send to Server, EOF to END.\n");
     }
     prompt("Termino...");
     exit(0);
