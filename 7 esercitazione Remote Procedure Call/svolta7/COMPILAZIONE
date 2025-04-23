@@ -1,4 +1,0 @@
-gcc -o client  client.c client_clnt. client_xdr.c 
-gcc -o server  server.c server_svc. client_xdr.c 
-
-gcc -o operazioni  operazioni_client.c operazioni_clnt. operazioni_xdr.c 
