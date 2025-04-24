@@ -17,7 +17,7 @@ void prompt(char *s)
 int main(int argc, char **argv)
 {
     ARGV0 = argv[0];
-    struct sockaddr_in clientaddr, servaddr;
+    struct sockaddr_in caddr, saddr;
     struct hostent *host;
     socklen_t len;
     int sd;
@@ -44,16 +44,16 @@ int main(int argc, char **argv)
     }
 
     // clear mem of server address
-    memset(&servaddr, 0, sizeof(struct sockaddr_in));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = ((struct in_addr *)(host->h_addr))->s_addr; /*h_addr is h_addr_list[0] */
-    servaddr.sin_port = htons(port);
+    memset(&saddr, 0, sizeof(struct sockaddr_in));
+    saddr.sin_family = AF_INET;
+    saddr.sin_addr.s_addr = ((struct in_addr *)(host->h_addr))->s_addr; /*h_addr is h_addr_list[0] */
+    saddr.sin_port = htons(port);
 
     // clear mem of client address
-    memset(&clientaddr, 0, sizeof(struct sockaddr_in));
-    clientaddr.sin_family = AF_INET;
-    clientaddr.sin_addr.s_addr = INADDR_ANY;
-    clientaddr.sin_port = 0;
+    memset(&caddr, 0, sizeof(struct sockaddr_in));
+    caddr.sin_family = AF_INET;
+    caddr.sin_addr.s_addr = INADDR_ANY;
+    caddr.sin_port = 0;
 
     prompt("Start\n");
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
     printf("Created socket in fd %d\n", sd);
 
     // bind socket
-    if (bind(sd, (struct sockaddr *)&clientaddr, sizeof(clientaddr)) < 0)
+    if (bind(sd, (struct sockaddr *)&caddr, sizeof(caddr)) < 0)
     {
         perror("Bind socket");
         exit(3);
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 
         // sendto
         len = sizeof(struct sockaddr_in);
-        if (sendto(sd, dirname, sizeof(dirname), 0, (struct sockaddr *)&servaddr, len) < 0)
+        if (sendto(sd, dirname, sizeof(dirname), 0, (struct sockaddr *)&saddr, len) < 0)
         {
             perror("Cannot send");
             continue;
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
         prompt("Send OK\n");
 
         // recvfrom
-        if (recvfrom(sd, &result, sizeof(result), 0, (struct sockaddr *)&servaddr, &len) < 0)
+        if (recvfrom(sd, &result, sizeof(result), 0, (struct sockaddr *)&saddr, &len) < 0)
         {
             perror("Cannot receive");
             continue;

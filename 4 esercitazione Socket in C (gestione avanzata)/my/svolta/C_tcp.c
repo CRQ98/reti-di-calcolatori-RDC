@@ -19,7 +19,7 @@ void prompt(char *s)
 int main(int argc, char **argv)
 {
     ARGV0 = argv[0];
-    struct sockaddr_in clientaddr, servaddr;
+    struct sockaddr_in saddr;
     struct hostent *host;
 
     // controll parameter number
@@ -43,20 +43,21 @@ int main(int argc, char **argv)
         exit(1);
 
     // clear mem of server address
-    memset(&servaddr, 0, sizeof(struct sockaddr_in));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = ((struct in_addr *)(host->h_addr))->s_addr; /*h_addr is h_addr_list[0] */
-    servaddr.sin_port = htons(port);
+    memset(&saddr, 0, sizeof(struct sockaddr_in));
+    saddr.sin_family = AF_INET;
+    saddr.sin_addr.s_addr = ((struct in_addr *)(host->h_addr))->s_addr; /*h_addr is h_addr_list[0] */
+    saddr.sin_port = htons(port);
 
     prompt("Start\n");
 
-    char filename[256], response;
+    char filename[FILENAME_LENGTH], response;
     int nread, fin, fout, nline, sd;
     char *request;
 
-    printf("Insert <filename> which you want send to Server, EOF to END.\n");
+    printf("Insert <filename> which you want get form Server, EOF to END.\n");
     while ((fgets(filename, sizeof(filename), stdin)) != NULL)
     {
+        filename[strcspn(filename,"2\n")] = '\0';
         // create socket
         sd = socket(AF_INET, SOCK_STREAM, 0);
         if (sd < 0)
@@ -68,7 +69,7 @@ int main(int argc, char **argv)
         printf("Created socket in fd %d\n", sd);
 
         /* BIND implicit in connect */
-        if (connect(sd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr)) < 0)
+        if (connect(sd, (struct sockaddr *)&saddr, sizeof(struct sockaddr)) < 0)
         {
             prompt("");
             perror("Connect");
@@ -76,12 +77,11 @@ int main(int argc, char **argv)
         }
         prompt("Connected to server\n");
 
-        prompt("");
-        printf("Send filename <%s>\n", filename);
+        printf("Send filename <%s> \n", filename);
         if (write(sd, filename, strlen(filename) + 1) < 0)
         {
             perror("Write filename");
-            printf("Insert <filename> which you want send to Server, EOF to END.\n");
+            printf("Insert <filename> which you want get form Server, EOF to END.\n");
             continue;
         }
         if (read(sd, &response, 1) < 0)
@@ -101,20 +101,20 @@ int main(int argc, char **argv)
             if (fout < 0)
             {
                 perror("Open file");
-                printf("Insert <filename> which you want send to Server, EOF to END.\n");
+                printf("Insert <filename> which you want get form Server, EOF to END.\n");
                 continue;
             }
             prompt("receive file\n");
             inputoutput(sd, fout);
+            close(fout);
         } // response == 'S'
         else
         {
             printf("Error when get response\n");
         }
-        close(fout);
         close(sd);
         prompt("Done\n");
-        printf("Insert <filename> which you want send to Server, EOF to END.\n");
+        printf("Insert <filename> which you want get form Server, EOF to END.\n");
     }
     prompt("Termino...");
     exit(0);

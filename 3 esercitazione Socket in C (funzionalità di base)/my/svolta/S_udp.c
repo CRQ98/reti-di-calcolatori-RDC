@@ -25,13 +25,13 @@ void prompt(char *s)
 int main(int argc, char **argv)
 {
     ARGV0 = argv[0];
-    struct sockaddr_in clientaddr, servaddr;
+    struct sockaddr_in caddr, saddr;
     struct hostent *clienthost;
     const int on = 1;
     Calc *calc = (Calc *)malloc(sizeof(Calc));
     Calc cal;
     int port;
-    socklen_t len=sizeof(clientaddr);
+    socklen_t len=sizeof(caddr);
     int sd;
 
     // controll parameter number
@@ -46,10 +46,10 @@ int main(int argc, char **argv)
         exit(1);
     // clear mem of server address
     // 测试没有char*
-    memset((char *)&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = INADDR_ANY; /*h_addr is h_addr_list[0] */
-    servaddr.sin_port = htons(port);
+    memset((char *)&saddr, 0, sizeof(saddr));
+    saddr.sin_family = AF_INET;
+    saddr.sin_addr.s_addr = INADDR_ANY; /*h_addr is h_addr_list[0] */
+    saddr.sin_port = htons(port);
 
     prompt("Start\n");
 
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
     }
 
     // bind socket
-    if (bind(sd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
+    if (bind(sd, (struct sockaddr *)&saddr, sizeof(saddr)) < 0)
     {
         perror(ARGV0);
         perror(" : Cannot bind socket");
@@ -85,14 +85,14 @@ int main(int argc, char **argv)
     {
         prompt("Waiting for new connection\n");
         // recvfrom
-        if (recvfrom(sd, calc, sizeof(Calc), 0, (struct sockaddr *)&clientaddr, &len) < 0)//len need be set in local
+        if (recvfrom(sd, calc, sizeof(Calc), 0, (struct sockaddr *)&caddr, &len) < 0)//len need be set in local
         {
             perror("Cannot receive");
             continue;
         }
         cal = *calc;
         // get client host info
-        clienthost = gethostbyaddr((char *)&clientaddr.sin_addr, sizeof(clientaddr.sin_addr), AF_INET);
+        clienthost = gethostbyaddr((char *)&caddr.sin_addr, sizeof(caddr.sin_addr), AF_INET);
         if (clienthost == NULL)
         {
             prompt("Cannot found client host\n");
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
         else
         {
             prompt("");
-            printf("Request from : %s %s:%i\n", clienthost->h_name, clienthost->h_addr, ntohs(clientaddr.sin_port));
+            printf("Request from : %s %s:%i\n", clienthost->h_name, clienthost->h_addr, ntohs(caddr.sin_port));
         }
 
         prompt("");
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
         }
 
         // send
-        if (sendto(sd, &risultato, sizeof(risultato), 0, (struct sockaddr *)&clientaddr, len) < 0)
+        if (sendto(sd, &risultato, sizeof(risultato), 0, (struct sockaddr *)&caddr, len) < 0)
         {
             perror("Cannot send");
             continue;

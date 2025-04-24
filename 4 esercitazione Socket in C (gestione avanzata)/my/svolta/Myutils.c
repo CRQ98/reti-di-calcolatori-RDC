@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 extern char *ARGV0;
 
 /*Convert port from a string and check its validity*/
-int getportfromstring(char *portstr)
+int getportfromstring(const char *portstr)
 {
     int n = 0;
     int port = -1;
@@ -43,4 +44,28 @@ void inputoutput(int fd_in,int fd_out){
         if(write(fd_out,&c,nread)<0){
             perror("Write in inputoutput");
         }
+}
+
+void gestore(int signo)
+{
+    int stato;
+    printf("SIGCHLD\n");
+    wait(&stato);
+}
+
+
+int is_directory(const char *path) {
+    struct stat path_stat;
+    if (stat(path, &path_stat) != 0) {
+        return 0;
+    }
+    return S_ISDIR(path_stat.st_mode);
+}
+
+int is_regularfile(const char *path) {
+    struct stat path_stat;
+    if (stat(path, &path_stat) != 0) {
+        return 0;
+    }
+    return S_ISREG(path_stat.st_mode);
 }
