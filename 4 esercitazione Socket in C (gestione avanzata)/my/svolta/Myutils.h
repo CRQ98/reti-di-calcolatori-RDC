@@ -6,6 +6,7 @@
 int getportfromstring(const char *portstr);
 void consumptioninput();
 void inputoutput(const int fd_in,const int fd_out);
+void inputoutputwithpattern(int fd_in, int fd_out);
 void gestore(const int signo);
 int is_directory(const char *path);
 int is_regularfile(const char *path);

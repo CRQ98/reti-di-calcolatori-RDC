@@ -193,33 +193,34 @@ int main(int argc, char **argv)
             }
             char filename[FILENAME_LENGTH];
             int nread, finfd;
-            char response = 'S';
+            char response;
             if (fork() == 0)
             {
+                printf("Child : %d\n",getpid());
                 close(tcpfd);
-                if ((nread = read(cfd, filename, sizeof(filename)) < 0))
+                while ((nread = read(cfd, filename, sizeof(filename))) > 0)
                 {
-                    perror("Read");
-                    exit(3);
-                }
-                if ((finfd = open(filename, O_RDONLY)) < 0)
-                {
-                    perror("Open");
-                    response = 'N';
-                }
-                if (write(cfd, &response, 1) < 0)
-                {
-                    perror("write");
-                }
-                else
-                {
-                    inputoutput(finfd, cfd);
-                }
-                close(finfd);
-                shutdown(cfd,1);
-                shutdown(cfd,0);
+                    printf("Filename : <%s>\n", filename);
+                    response = 'S';
+                    if ((finfd = open(filename, O_RDONLY)) < 0)
+                    {
+                        perror("Open");
+                        response = 'N';
+                    }
+                    printf("Start transfer\n");
+                    if (write(cfd, &response, 1) < 0)
+                    {
+                        perror("write");
+                        exit(3);
+                    }
+                    if (response == 'S')
+                        inputoutputwithpattern(finfd, cfd);
+                    close(finfd);
+                } // while nread
+                shutdown(cfd, SHUT_RDWR);
+                printf("Child END\n");
                 exit(0);
-            }
-        }
+            } // fork
+        } // if isset tcpfd
     }
 } // main
