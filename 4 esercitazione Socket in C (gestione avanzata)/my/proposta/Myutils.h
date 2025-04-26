@@ -11,8 +11,8 @@ typedef struct
 void prompt(char *s);
 int get_port_from_string(const char *portstr);
 void consumptionstdin();
-int readc(char *c, int fin);
-int writec(char *c, int fout);
+int readc(int fin, char *c);
+int writec(int fout, char *c);
 void inputoutput(const int fd_in, const int fd_out);
 void inputoutput_withpattern(int fd_in, int fd_out);
 off_t get_filesize(const char *filename);

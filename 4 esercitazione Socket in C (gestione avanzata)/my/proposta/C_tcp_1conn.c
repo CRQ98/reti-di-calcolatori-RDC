@@ -89,8 +89,6 @@ int main(int argc, char **argv)
             close(sd);
             exit(3);
         }
-
-        printf("Response : %c\n", response);
         if (response == 'N')
         {
             printf("Cannot find this directory in remote\n");

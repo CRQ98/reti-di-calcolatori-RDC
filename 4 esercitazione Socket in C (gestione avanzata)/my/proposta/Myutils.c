@@ -45,7 +45,7 @@ void consumptionstdin()
         ;
 }
 
-int readc(char *c, int fin)
+int readc(int fin, char *c)
 {
     int nread;
     nread = read(fin, c, 1);
@@ -57,7 +57,7 @@ int readc(char *c, int fin)
     return nread;
 }
 
-int writec(char *c, int fout)
+int writec(int fout, char *c)
 {
     int nwrite;
     nwrite = write(fout, c, 1);
@@ -72,9 +72,9 @@ int writec(char *c, int fout)
 void inputoutput(int fd_in, int fd_out)
 {
     char c;
-    while (readc(&c, fd_in) > 0)
+    while (readc(fd_in, &c) > 0)
     {
-        if (writec(&c, fd_out) < 0)
+        if (writec(fd_out, &c) < 0)
             break;
     }
 }
@@ -84,19 +84,19 @@ void inputoutput_withpattern(int fd_in, int fd_out)
     int nread;
     char c;
 
-    while (readc(&c, fd_in) > 0)
+    while (readc(fd_in, &c) > 0)
     {
         if (c == 0x04)
         { // EOT = 0x04
             return;
         }
-        if (writec(&c, fd_out) < 0)
+        if (writec(fd_out, &c) < 0)
         {
             break;
         }
     }
     c = 0x04;
-    writec(&c, fd_out);
+    writec(fd_out, &c);
 }
 
 off_t get_filesize(const char *filename)

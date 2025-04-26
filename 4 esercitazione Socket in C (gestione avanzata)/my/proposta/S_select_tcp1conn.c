@@ -257,11 +257,11 @@ int main(int argc, char **argv)
                 printf("Child : %d\n", getpid());
                 close(tcpfd);
                 DIR *dir, *dir1, *dir2;
-                struct dirent *dd, *dd2;
+                struct dirent *dd;
                 char eot = 0x04, nextline = '\n';
-                while ((nread = read(cfd, dirname, sizeof(dirname))) > 0)
+                while ((nread = read(cfd, dirname, sizeof(dirname))) > 0) // read form client
                 {
-                    if ((dir = opendir(dirname)) == NULL)
+                    if ((dir = opendir(dirname)) == NULL) // first lvl dir
                     {
                         response = 'N';
                     }
@@ -269,46 +269,25 @@ int main(int argc, char **argv)
                     {
                         response = 'Y';
                     }
-                    write(cfd, &response, 1);
+                    writec(cfd, &response);
                     if (response == 'N')
                         continue;
-                    while ((dd = readdir(dir)) != NULL)
+                    while ((dd = readdir(dir)) != NULL) // second lvl dir
                     {
                         if (strcmp(dd->d_name, ".") == 0 || strcmp(dd->d_name, "..") == 0)
                             continue;
                         snprintf(fullpath, sizeof(fullpath), "%s/%s", dirname, dd->d_name);
-                        if (is_directory(fullpath))
+                        if (is_regularfile(fullpath))
                         {
-                            dir1 = opendir(fullpath);
-                            if (dir1 == NULL)
+                            if (write(cfd, dd->d_name, strlen(dd->d_name)) < 0)
                             {
-                                perror("Open dir");
+                                perror("Write filename");
                             }
-                            else
-                            {
-                                while ((dd2 = readdir(dir1)) != NULL)
-                                {
-                                    if (strcmp(dd2->d_name, ".") == 0 || strcmp(dd2->d_name, "..") == 0)
-                                        continue;
-                                    snprintf(filepath, sizeof(filepath), "%s/%s", fullpath, dd2->d_name);
-                                    if (is_regularfile(filepath))
-                                    {
-                                        if (write(cfd, dd2->d_name, strlen(dd2->d_name)) < 0)
-                                        {
-                                            perror("Write filename");
-                                        }
-                                        if (write(cfd, &nextline, 1) < 0)
-                                        {
-                                            perror("Write nextline");
-                                        }
-                                    }
-                                } // while dd2
-                                closedir(dir1);
-                            }
-                        } // is directory
+                            writec(cfd, &nextline);
+                        }
                     } // while dd
                     closedir(dir);
-                    write(cfd, &eot, 1);
+                    writec(cfd, &eot);
                 } // while nread
                 shutdown(cfd, SHUT_RDWR);
                 printf("Child END\n");
