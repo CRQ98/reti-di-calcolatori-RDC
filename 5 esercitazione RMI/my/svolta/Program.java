@@ -1,32 +1,32 @@
 import java.io.Serializable;
 
-class Programma implements Serializable {
+public class Program implements Serializable {
     private static final int ROW = 12;
     private static final int COL = 5;
 
     public String[][] speaker = new String[ROW][COL];
 
-    public Programma() {
+    public Program() {
         for (int i = 0; i < ROW; i++)
             for (int j = 0; j < COL; j++)
                 speaker[i][j] = "";
     }
 
-    public synchronized int register(int section, String name) {
-        System.out.println("Programma: registrazione di " + name + " per la sessione " + section);
+    public synchronized int register(int session, String name) {
+        System.out.println("Program: registrazione di " + name + " per la sessione " + session);
         for (int i = 0; i < COL; i++)
-            if (speaker[section - 1][i].equals("")) {
-                speaker[section - 1][i] = name;
+            if (speaker[session][i].equals("")) {
+                speaker[session][i] = name;
                 return 0;
             }
         return 1;
     }
 
-    public void print(Programma p) {
-        System.out.print("Sessione");
+    public void print() {
+        System.out.print("Session");
         for (int i = 0; i < COL; i++)
             System.out.print("\tIntervento " + i);
-        System.out.print("\n");
+        System.out.print("\n\n");
         
         for (int i = 0; i < ROW; i++) {
             System.out.print("S" + (i + 1));
@@ -35,5 +35,5 @@ class Programma implements Serializable {
             System.out.print("\n");
         }
 
-    }
+    }   
 }
