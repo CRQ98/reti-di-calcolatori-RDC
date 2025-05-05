@@ -13,7 +13,7 @@ class ClientCongress {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
         if (args.length != 1) {
-            System.out.println("Usage: RMI_Registry_IP");
+            System.out.println("Usage:Client RMI_Registry_IP");
             System.exit(1);
         }
         registryHost = args[0];
